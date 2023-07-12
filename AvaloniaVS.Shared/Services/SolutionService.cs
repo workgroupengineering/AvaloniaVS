@@ -215,7 +215,17 @@ namespace AvaloniaVS.Services
                         .GetProperty("MSBuildProject",
                             BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance)
                         .GetMethod.Invoke(loaded, null) as Task<Microsoft.Build.Evaluation.Project>;
-                    var msbuildProperties = (await task).AllEvaluatedProperties;
+                    var projectInfo = (await task);
+                    var msbuildProperties = projectInfo.AllEvaluatedProperties;
+                    var debugItems = Array.Empty<string>();
+                    var x = projectInfo.GetItems("AvaloniaXaml");
+                    if(projectInfo.GetItems("AvaloniaPreviewerDebugItem") is ICollection<Microsoft.Build.Evaluation.ProjectItem> items)
+                    {
+                        debugItems = items.Select(i => i?.EvaluatedInclude)
+                            .Where(i => !string.IsNullOrEmpty(i))
+                            .ToArray();
+                    }
+                        
                     var targetPath = GetMsBuildProperty(msbuildProperties, "TargetPath");
 
                     if (!string.IsNullOrWhiteSpace(targetPath))
