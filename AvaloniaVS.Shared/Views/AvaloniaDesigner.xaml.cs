@@ -14,7 +14,6 @@ using Avalonia.Ide.CompletionEngine.AssemblyMetadata;
 using Avalonia.Ide.CompletionEngine.DnlibMetadataProvider;
 using AvaloniaVS.Models;
 using AvaloniaVS.Services;
-using AvaloniaVS.Shared.Views;
 using EnvDTE;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
@@ -100,6 +99,7 @@ namespace AvaloniaVS.Views
         private bool _disposed;
         private double _scaling = 1;
         private AvaloniaDesignerView _unPausedView;
+        private bool _buidRequired;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AvaloniaDesigner"/> class.
@@ -340,14 +340,18 @@ namespace AvaloniaVS.Views
 
                 bool IsValidTarget(ProjectInfo project)
                 {
-                    return project.IsExecutable && 
+                    return project.IsExecutable &&
                         project.References.Contains("Avalonia.DesignerSupport") &&
                         (project.Project == _project || project.ProjectReferences.Contains(_project));
                 }
 
                 bool IsValidOutput(ProjectOutputInfo output)
                 {
-                    return output.IsNetCore && output.RuntimeIdentifier != "browser-wasm" && (output.TargetPlatfromIdentifier == "" || output.TargetPlatfromIdentifier == "Windows" || output.TargetPlatfromIdentifier == "macos");
+                    return (output.IsNetCore || output.IsNetFramework)
+                        && output.RuntimeIdentifier != "browser-wasm"
+                        && (output.TargetPlatfromIdentifier == ""
+                            || string.Equals(output.TargetPlatfromIdentifier, "windows", StringComparison.OrdinalIgnoreCase)
+                            || string.Equals(output.TargetPlatfromIdentifier, "macos", StringComparison.OrdinalIgnoreCase));
                 }
 
                 string GetXamlAssembly(ProjectOutputInfo output)
@@ -377,7 +381,8 @@ namespace AvaloniaVS.Views
                                ExecutableAssembly = output.TargetAssembly,
                                XamlAssembly = GetXamlAssembly(output),
                                HostApp = output.HostApp,
-                               Project = project.Project
+                               Project = project.Project,
+                               IsNetFramework = output.IsNetFramework
                            }).ToList();
 
                 SelectedTarget = Targets.FirstOrDefault(t => t.Name == oldSelectedTarget?.Name) ?? Targets.FirstOrDefault();
@@ -460,8 +465,9 @@ namespace AvaloniaVS.Views
             var assemblyPath = SelectedTarget?.XamlAssembly;
             var executablePath = SelectedTarget?.ExecutableAssembly;
             var hostAppPath = SelectedTarget?.HostApp;
+            var isNetFx = SelectedTarget?.IsNetFramework; 
 
-            if (assemblyPath != null && executablePath != null && hostAppPath != null)
+            if (assemblyPath != null && executablePath != null && hostAppPath != null && isNetFx != null)
             {
                 RebuildMetadata(assemblyPath, executablePath);
 
@@ -472,7 +478,7 @@ namespace AvaloniaVS.Views
                     if (!IsPaused)
                     {
                         await Process.SetScalingAsync(VisualTreeHelper.GetDpi(this).DpiScaleX * _scaling);
-                        await Process.StartAsync(assemblyPath, executablePath, hostAppPath);
+                        await Process.StartAsync(assemblyPath, executablePath, hostAppPath, (bool)isNetFx);
                         await Process.UpdateXamlAsync(await ReadAllTextAsync(_xamlPath));
                     }
                 }
@@ -483,6 +489,7 @@ namespace AvaloniaVS.Views
                 }
                 catch (FileNotFoundException ex)
                 {
+                    _buidRequired = true;
                     ShowError("Build Required", ex.Message);
                     Log.Logger.Debug(ex, "StartAsync could not find executable");
                 }
@@ -495,6 +502,7 @@ namespace AvaloniaVS.Views
                 {
                     _startingProcess.Release();
                 }
+                _buidRequired = false;
             }
             else
             {
@@ -625,9 +633,18 @@ namespace AvaloniaVS.Views
             errorIndicator.Visibility = Visibility.Visible;
             errorHeading.Text = heading;
             errorMessage.Text = message;
+            if (_buidRequired == true)
+            {
+                previewer.buildButton.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                previewer.buildButton.Visibility = Visibility.Hidden;
+            }
             previewer.error.Visibility = Visibility.Visible;
             previewer.errorHeading.Text = heading;
             previewer.errorMessage.Text = message;
+            previewer.previewScroller.Visibility = Visibility.Hidden;
         }
 
         private void ShowPreview()
@@ -677,7 +694,7 @@ namespace AvaloniaVS.Views
                 {
                     HorizontalGrid();
                     var content = SwapPanesButton.Content as UIElement;
-                    content.RenderTransform = new RotateTransform(90);                    
+                    content.RenderTransform = new RotateTransform(90);
                 }
                 else
                 {
@@ -705,7 +722,7 @@ namespace AvaloniaVS.Views
             {
                 case Orientation.Horizontal:
                     var editorRow = Grid.GetRow(editorHost);
-                    
+
                     if (editorRow == 0)
                     {
                         Grid.SetRow(editorHost, 2);
