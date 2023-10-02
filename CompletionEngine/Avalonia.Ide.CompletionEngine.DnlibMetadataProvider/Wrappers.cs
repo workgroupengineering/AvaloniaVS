@@ -420,7 +420,7 @@ internal class ParameterWrapper : IParameterInformation
 
     public ParameterWrapper(Parameter param)
     {
-        TypeFullName = param.Name;
+        TypeFullName = param.Type.FullName;
         QualifiedTypeFullName = param.Type.AssemblyQualifiedName;
         _type = new Lazy<ITypeInformation?>(() =>
         {
