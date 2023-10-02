@@ -495,8 +495,8 @@ namespace CompletionEngineTests
                         "<ItemsControl><ItemsControl.DataTemplates><",
                         new string[]
                         {
-                            "!--",
                             "/ItemsControl.DataTemplates>",
+                            "!--",
                             "DataTemplate",
                             "FuncDataTemplate",
                             "FuncDataTemplate`1",
@@ -510,8 +510,8 @@ namespace CompletionEngineTests
                         "<UserControl><UserControl.Styles><",
                         new string[]
                         {
-                            "!--",
                             "/UserControl.Styles>",
+                            "!--",
                             "ControlTheme",
                             "Style",
                             "StyleInclude",
@@ -523,8 +523,8 @@ namespace CompletionEngineTests
                         "<TextBlock><TextBlock.Inlines><",
                         new string[]
                         {
-                            "!--",
                             "/TextBlock.Inlines>",
+                            "!--",
                             "Bold",
                             "InlineUIContainer",
                             "Italic",
