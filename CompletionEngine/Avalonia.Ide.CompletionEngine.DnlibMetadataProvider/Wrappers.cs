@@ -117,7 +117,6 @@ internal class TypeWrapper : ITypeInformation
                 foreach (var ret2 in ret)
                     if (ret2 is not null)
                         yield return ret2;
-
         }
     }
     public override string ToString() => Name;
@@ -149,6 +148,20 @@ internal class TypeWrapper : ITypeInformation
             }
         }
     }
+    IReadOnlyList<ICustomAttributeInformation>? _customAttributes;
+    public IReadOnlyList<ICustomAttributeInformation> CustomAttributes
+    {
+        get
+        {
+            if (_customAttributes is null)
+            {
+                _customAttributes = _type.CustomAttributes
+                    .Select(a => new CustomAttributeWrapper(a))
+                    .ToArray();
+            }
+            return _customAttributes!;
+        }
+    }
 }
 
 internal class CustomAttributeWrapper : ICustomAttributeInformation
@@ -171,10 +184,17 @@ internal class ConstructorArgumentWrapper : IAttributeConstructorArgumentInforma
 {
     public ConstructorArgumentWrapper(CAArgument ca)
     {
-        Value = ca.Value;
+        if (ca.Value is ClassSig cs)
+        {
+            Value = cs.AssemblyQualifiedName;
+        }
+        else
+        {
+            Value = ca.Value;
+        }
     }
 
-    public object Value { get; }
+    public object? Value { get; }
 }
 
 internal class PropertyWrapper : IPropertyInformation
@@ -375,6 +395,21 @@ internal class MethodWrapper : IMethodInformation
     public IList<IParameterInformation> Parameters => _parameters.Value;
     public string ReturnTypeFullName { get; }
     public string QualifiedReturnTypeFullName { get; }
+
+    private IReadOnlyList<ICustomAttributeInformation>? _customAttributes;
+    public IReadOnlyList<ICustomAttributeInformation> CustomAttributes
+    {
+        get
+        {
+            if (_customAttributes == null)
+            {
+                _customAttributes = _method.CustomAttributes
+                    .Select(a => new CustomAttributeWrapper(a))
+                    .ToArray();
+            }
+            return _customAttributes;
+        }
+    }
 
     public override string ToString() => Name;
 }
