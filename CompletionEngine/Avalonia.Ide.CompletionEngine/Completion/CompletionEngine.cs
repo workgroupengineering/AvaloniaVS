@@ -270,7 +270,7 @@ public class CompletionEngine
                     }
                     if (propertySeparatorIndex == -1)
                     {
-                        parentType = _helper.LookupType(parentTag);
+                        parentType = Helper.LookupType(parentTag);
                         completions.Add(new Completion(parentTag, $"{parentTag}.", CompletionKind.Class, priority: 1)
                         {
                             TriggerCompletionAfterInsert = true,
@@ -284,7 +284,7 @@ public class CompletionEngine
                     {
                         var typeName = parentTag.Substring(0, propertySeparatorIndex);
                         var propertyName = parentTag.Substring(propertySeparatorIndex + 1);
-                        if (_helper.LookupType(typeName) is { } t)
+                        if (Helper.LookupType(typeName) is { } t)
                         {
                             parentType = t.Properties
                                 .FirstOrDefault(p => string.Equals(p.Name, propertyName, StringComparison.OrdinalIgnoreCase))
@@ -295,7 +295,7 @@ public class CompletionEngine
                 }
                 completions.Add(new Completion("!--", "!---->", CompletionKind.Comment) { RecommendedCursorOffset = 3 });
 
-                var candidateTypes = _helper.FilterTypes(tagName).Select(kv => kv.Value);
+                var candidateTypes = Helper.FilterTypes(tagName).Select(kv => kv.Value);
 
                 if ((parentType?.ItemsType ?? parentType) is { } itemType)
                 {
