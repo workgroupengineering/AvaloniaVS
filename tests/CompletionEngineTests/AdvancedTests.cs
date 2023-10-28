@@ -499,9 +499,9 @@ namespace CompletionEngineTests
                             "!--",
                             "DataTemplate",
                             "FuncDataTemplate",
-                            "FuncDataTemplate`1",
+                            "FuncDataTemplate<T>",
                             "FuncTreeDataTemplate",
-                            "FuncTreeDataTemplate`1",
+                            "FuncTreeDataTemplate<T>",
                             "TreeDataTemplate",
                         },
                 };
