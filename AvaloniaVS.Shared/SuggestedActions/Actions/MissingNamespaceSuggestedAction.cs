@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AvaloniaVS.Shared.SuggestedActions.Actions.Base;
 using AvaloniaVS.Shared.SuggestedActions.Helpers;
 using Microsoft.VisualStudio.Language.Intellisense;
+using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Differencing;
 using Microsoft.VisualStudio.Text.Editor;
