@@ -87,9 +87,10 @@ internal class DnlibMetadataProviderSession : IMetadataReaderSession
                 asmResolver.AddToCache(def);
                 assemblies.Add(def);
             }
-            catch
+            catch (Exception ex)
             {
                 //Ignore
+                System.Diagnostics.Debug.WriteLine(ex);
             }
         }
 
