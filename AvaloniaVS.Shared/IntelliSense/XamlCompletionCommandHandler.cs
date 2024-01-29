@@ -489,7 +489,7 @@ namespace AvaloniaVS.IntelliSense
             }
         }
 
-        private async Task GenerateEventHandlerAsync(string controlType, string eventName, string generatedMethodName)
+        private async System.Threading.Tasks.Task GenerateEventHandlerAsync(string controlType, string eventName, string generatedMethodName)
         {
             var currentScheduler = TaskScheduler.FromCurrentSynchronizationContext();
             try
