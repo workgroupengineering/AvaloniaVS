@@ -585,6 +585,7 @@ namespace AvaloniaVS.Views
             try
             {
                 var sw = Stopwatch.StartNew();
+                await TaskScheduler.Default;
 
                 Task<Metadata> metadataLoad;
 
