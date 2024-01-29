@@ -311,5 +311,8 @@ namespace AvaloniaVS.Views
 
             return result.ToArray();
         }
+
+        public Size ViewportSize =>
+            new(previewScroller.ViewportHeight, previewScroller.ViewportHeight);
     }
 }
