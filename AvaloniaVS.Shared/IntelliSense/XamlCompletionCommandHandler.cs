@@ -132,7 +132,7 @@ namespace AvaloniaVS.IntelliSense
                 {
                     if (TriggerCompletion())
                     {
-                        _session.Filter();
+                        _session?.Filter();
                     }
 
                     return true;
@@ -145,7 +145,7 @@ namespace AvaloniaVS.IntelliSense
         {
             if (_session != null && !_session.IsDismissed)
             {
-                _session.Filter();
+                _session?.Filter();
                 return true;
             }
 
@@ -163,7 +163,8 @@ namespace AvaloniaVS.IntelliSense
             // a completion, which can complete on the wrong value
             // So we only trigger on ' ' or '\t', and swallow that so it doesn't get 
             // inserted into the text buffer
-            if (_session != null && !_session.IsDismissed)
+            var session = _session;
+            if (session is not null && !session.IsDismissed)
             {
                 var text = line.Snapshot.GetText(start, end - start);
 
@@ -199,14 +200,14 @@ namespace AvaloniaVS.IntelliSense
                 || c == '\'' || c == '"' || c == '=' || c == '>' || c == '.'
                 || c == '#' || c == ')' || c == ']')
             {
-                if (_session != null && !_session.IsDismissed &&
-                    _session.SelectedCompletionSet.SelectionStatus.IsSelected)
+                if (session != null && !session.IsDismissed &&
+                    session.SelectedCompletionSet.SelectionStatus.IsSelected)
                 {
-                    var selected = _session.SelectedCompletionSet.SelectionStatus.Completion as XamlCompletion;
+                    var selected = session.SelectedCompletionSet.SelectionStatus.Completion as XamlCompletion;
 
                     var bufferPos = _textView.Caret.Position.BufferPosition;
 
-                    _session.Commit();
+                    session.Commit();
 
                     if (selected.DeleteTextOffset is int rof)
                     {
@@ -355,11 +356,11 @@ namespace AvaloniaVS.IntelliSense
                 }
                 else
                 {
-                    _session?.Dismiss();
+                    session?.Dismiss();
                     return false;
                 }
             }
-            else if (c == ':' && (_session != null && !_session.IsDismissed))
+            else if (c == ':' && (session != null && !session.IsDismissed))
             {
                 var parser = XmlParser.Parse(_textView.TextSnapshot.GetText().AsMemory(), 0, end);
                 var state = parser.State;
@@ -368,22 +369,22 @@ namespace AvaloniaVS.IntelliSense
                     parser.AttributeName?.Equals("Selector") == true)
                 {
                     // Force new session to start to suggest pseudoclasses
-                    _session.Dismiss();
+                    session.Dismiss();
                     return false;
                 }
             }
-            else if (c == '(' && _session?.IsDismissed == false)
+            else if (c == '(' && session?.IsDismissed == false)
             {
                 var parser = XmlParser.Parse(_textView.TextSnapshot.GetText().AsMemory(), 0, end);
                 var state = parser.State;
                 if ((state == XmlParser.ParserState.AttributeValue || state == XmlParser.ParserState.AfterAttributeValue)
                     && parser.AttributeName?.Equals("Selector") == true)
                 {
-                    _session.Dismiss();
+                    session.Dismiss();
                     return false;
                 }
             }
-            else if (c == '{' && (_session != null && !_session.IsDismissed))
+            else if (c == '{' && (session != null && !session.IsDismissed))
             {
                 var parser = XmlParser.Parse(_textView.TextSnapshot.GetText().AsMemory(), 0, end);
                 var state = parser.State;
@@ -392,11 +393,11 @@ namespace AvaloniaVS.IntelliSense
                 {
                     // For something like Brushes, restart the completion session if we want
                     // a markup extension
-                    _session.Dismiss();
+                    session.Dismiss();
                     return false;
                 }
             }
-            else if (c == ',' && (_session != null && !_session.IsDismissed))
+            else if (c == ',' && (session != null && !session.IsDismissed))
             {
                 // Typing the comma in a markup extension should trigger a new completion session
                 var text = line.Snapshot.GetText(start, end - start);
@@ -404,7 +405,7 @@ namespace AvaloniaVS.IntelliSense
                 {
                     if (text[i] == '{')
                     {
-                        _session.Dismiss();
+                        session.Dismiss();
                         return false;
                     }
                 }
@@ -469,8 +470,9 @@ namespace AvaloniaVS.IntelliSense
 
         private void SessionDismissed(object sender, EventArgs e)
         {
-            _session.Dismissed -= SessionDismissed;
+            var session = _session;
             _session = null;
+            session.Dismissed -= SessionDismissed;
         }
 
         private IEnumerable<ParameterSyntax> GetParametersList(string[] parameterTypes, string[] parameterNames)
