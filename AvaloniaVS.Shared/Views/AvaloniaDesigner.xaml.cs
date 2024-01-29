@@ -435,8 +435,8 @@ namespace AvaloniaVS.Views
             {
                 if (Process.IsReady && Process.Bitmap != null)
                 {
-                    double x = previewer.ActualWidth / (Process.Bitmap.Width / Process.Scaling);
-                    double y = previewer.ActualHeight / (Process.Bitmap.Height / Process.Scaling);
+                    double x = (previewer.ActualWidth - 30) / (Process.Bitmap.Width / Process.Scaling);
+                    double y = (previewer.ActualHeight -30) / (Process.Bitmap.Height / Process.Scaling);
 
                     ZoomLevel = string.Format(CultureInfo.InvariantCulture, "{0}%", Math.Round(Math.Min(x, y), 2, MidpointRounding.ToEven) * 100);
                 }
