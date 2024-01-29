@@ -299,7 +299,7 @@ public class CompletionEngine
                     }
 
                 }
-                if(isTagEmpty)
+                if (isTagEmpty)
                 {
                     completions.Add(new Completion("!--", "!---->", CompletionKind.Comment) { RecommendedCursorOffset = 3 });
                 }
@@ -658,7 +658,7 @@ public class CompletionEngine
                 }
             }
         }
-        return new (xamlName, insretText, default, recommendedCursorOffset, triggerCompletionAfterInsert);
+        return new(xamlName, insretText, default, recommendedCursorOffset, triggerCompletionAfterInsert);
     }
 
     private void ProcessStyleSetter(string setterPropertyName, XmlParser state, List<Completion> completions, string? currentAssemblyName)
