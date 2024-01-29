@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Avalonia;
+using Avalonia.Controls;
 
 namespace CompletionEngineTests.Models
 {
@@ -140,4 +142,10 @@ namespace CompletionEngineTests.Models
             throw new System.NotImplementedException();
         }
     }
+
+    public class MyButton : Button
+    {
+        protected override Type StyleKeyOverride => typeof(MyButton);
+    }
+
 }
