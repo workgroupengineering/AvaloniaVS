@@ -81,6 +81,12 @@ namespace CompletionEngineTests.Models
     public class MyButton : Button
     {
     }
+
+    public class MyListBoxItem : Avalonia.Controls.ListBoxItem
+    {
+
+    }
+
     public class MyListBox : Avalonia.Controls.Control
         , IList<MyListBoxItem>
     {
