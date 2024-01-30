@@ -78,11 +78,9 @@ namespace CompletionEngineTests.Models
         private int PrivateProperty { get; set; }
     }
 
-    public class MyListBoxItem : Avalonia.Controls.ListBoxItem
+    public class MyButton : Button
     {
-
     }
-
     public class MyListBox : Avalonia.Controls.Control
         , IList<MyListBoxItem>
     {
@@ -142,10 +140,4 @@ namespace CompletionEngineTests.Models
             throw new System.NotImplementedException();
         }
     }
-
-    public class MyButton : Button
-    {
-        protected override Type StyleKeyOverride => typeof(MyButton);
-    }
-
 }
