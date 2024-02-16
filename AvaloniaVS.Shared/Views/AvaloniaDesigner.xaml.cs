@@ -23,6 +23,7 @@ using Microsoft.VisualStudio.Threading;
 using Serilog;
 using Task = System.Threading.Tasks.Task;
 
+
 namespace AvaloniaVS.Views
 {
     public enum AvaloniaDesignerView
@@ -559,7 +560,14 @@ namespace AvaloniaVS.Views
                 string intermediateOutputPath = GetIntermediateOutputPath(storage);
                 if (metadata.CompletionMetadata == null || metadata.NeedInvalidation)
                 {
-                    CreateCompletionMetadataAsync(intermediateOutputPath, assemblyPath, metadata).FireAndForget();
+                    //ThreadHelper.JoinableTaskFactory.RunAsync(() => Task.Delay(1000)).;
+                    var task = ThreadHelper.JoinableTaskFactory.RunAsync(
+                        async () =>
+                        {
+                            await CreateCompletionMetadataAsync(intermediateOutputPath, assemblyPath, metadata);
+                            return Task.CompletedTask;
+                        }).AsVsTask();
+                    task.Description = "Avalonia Get Metadata";
                 }
             }
         }
@@ -580,7 +588,8 @@ namespace AvaloniaVS.Views
 
                 dte.Events.BuildEvents.OnBuildBegin += (s, e) => _metadataCache.Clear();
             }
-
+            var watch = new Stopwatch();
+            watch.Start();
             Log.Logger.Information("Started AvaloniaDesigner.CreateCompletionMetadataAsync() for {ExecutablePath}", intermediateOutputPath);
 
             try
@@ -614,7 +623,8 @@ namespace AvaloniaVS.Views
             }
             finally
             {
-                Log.Logger.Verbose("Finished AvaloniaDesigner.CreateCompletionMetadataAsync()");
+                watch?.Stop();
+                Log.Logger.Verbose("Finished AvaloniaDesigner.CreateCompletionMetadataAsync() {0}", watch?.Elapsed);
             }
         }
 
