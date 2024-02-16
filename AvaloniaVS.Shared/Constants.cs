@@ -15,4 +15,15 @@ internal static class Constants
     public static readonly Guid AvaloviaFactoryEditorGuid = new (AvaloviaFactoryEditorGuidString);
 
     public const string AvaloniaCapability = nameof(Avalonia);
+
+    /// <summary>
+    /// DevTools Clipoard data format
+    /// </summary>
+    public static class DataFormats
+    {
+        /// <summary>
+        /// Clipboard data format for the selector. It is added for quick format recognition in IDEs
+        /// </summary>
+        public const string Avalonia_DevTools_Selector = nameof(Avalonia_DevTools_Selector);
+    }
 }

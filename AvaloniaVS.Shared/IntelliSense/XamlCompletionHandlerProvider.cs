@@ -52,6 +52,13 @@ namespace AvaloniaVS.IntelliSense
                         textView,
                         textViewAdapter,
                         _completionEngineSource.CompletionEngine));
+                textView.Properties.GetOrCreateSingletonProperty(
+                    () => new XamlPasteCommandHandler(
+                        _serviceProvider,
+                        _completionBroker,
+                        textView,
+                        textViewAdapter,
+                        _completionEngineSource.CompletionEngine));
             }
         }
     }

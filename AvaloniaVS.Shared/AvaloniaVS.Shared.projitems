@@ -25,8 +25,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)IntelliSense\XamlErrorTableEntry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IntelliSense\XamlErrorTagger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IntelliSense\XamlErrorTaggerProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)intellisense\XamlPasteCommandHandler.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IntelliSense\XamlTextManipulatorRegistrar.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IntelliSense\XamlTextViewCreationListener.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)models\ClrNamespcaceSpan.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\DesignerRunTarget.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ProjectInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ProjectOutputInfo.cs" />
