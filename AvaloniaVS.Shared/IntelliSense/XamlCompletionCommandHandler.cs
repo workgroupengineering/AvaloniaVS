@@ -257,7 +257,7 @@ namespace AvaloniaVS.IntelliSense
                         var type = _engine.Helper.LookupType(parser.TagName);
                         if (type != null && type.Events.FirstOrDefault(x => x.Name == parser.AttributeName) != null)
                         {
-                            GenerateEventHandlerAsync(type.FullName, parser.AttributeName, selected.InsertionText).FireAndForget();
+                            GenerateEventHandlerAsync(type.FullName, parser.AttributeName, selected.InsertionText);
                         }
                         var isSelector = parser.AttributeName?.Equals("Selector") == true;
                         if (char.IsWhiteSpace(c))
