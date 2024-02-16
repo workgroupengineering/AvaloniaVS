@@ -213,7 +213,7 @@ namespace AvaloniaVS.Views
                 X = p.X / scaling,
                 Y = p.Y / scaling,
                 Modifiers = GetModifiers(e),
-            });
+            }).FireAndForget();
         }
 
         private void Preview_MouseDown(object sender, MouseButtonEventArgs e)
@@ -227,7 +227,7 @@ namespace AvaloniaVS.Views
                 Y = p.Y / scaling,
                 Button = GetButton(e.ChangedButton),
                 Modifiers = GetModifiers(e),
-            });
+            }).FireAndForget();
         }
 
         private void Preview_MouseUp(object sender, MouseButtonEventArgs e)
@@ -241,7 +241,7 @@ namespace AvaloniaVS.Views
                 Y = p.Y / scaling,
                 Button = GetButton(e.ChangedButton),
                 Modifiers = GetModifiers(e),
-            });
+            }).FireAndForget();
         }
         private static T FindParent<T>(DependencyObject child) where T : DependencyObject
         {
@@ -317,7 +317,7 @@ namespace AvaloniaVS.Views
             return result.ToArray();
         }
 
-        ScrollBar? _horizontalScroll;
+        ScrollBar _horizontalScroll;
         ScrollBar _verticalScroll;
         Size? _lastSize = default;
         public Size GetViewportSize(int padding)
