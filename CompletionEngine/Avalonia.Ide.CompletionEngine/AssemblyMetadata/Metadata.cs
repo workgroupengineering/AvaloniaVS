@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Avalonia.Ide.CompletionEngine.AssemblyMetadata;
@@ -20,8 +20,22 @@ public class Metadata
         var namespaces = _inverseNamespace.GetOrCreate(type.FullName, _ => new HashSet<string>());
         namespaces.Add(ns);
     }
+
+    /// <summary>
+    /// Add new metadata. Keys are added and existing keys are unchanged.
+    /// </summary>
+    public void AddMetadata(Metadata metadata)
+    {
+        foreach (var x in metadata._namespaces)
+            if (!_namespaces.ContainsKey(x.Key))
+                _namespaces.Add(x.Key, x.Value);
+        foreach (var x in metadata._inverseNamespace)
+            if (!_inverseNamespace.ContainsKey(x.Key))
+                _inverseNamespace.Add(x.Key, x.Value);
+    }
 }
 
+// todo: add property for permutation annotation. A MetadataType may be defined in multiple build contexts, but have different definitions.
 [DebuggerDisplay("{Name}")]
 public record MetadataType(string Name)
 {
